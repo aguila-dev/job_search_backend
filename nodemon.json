@@ -1,0 +1,6 @@
+{
+    "ignore": ["locations.json"],
+    "watch": ["*.js", "src/"],
+    "ext": "js"
+  }
+  
