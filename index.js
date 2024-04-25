@@ -7,6 +7,7 @@ const fetchAllCompanyLocations = require('./script/getLocations.js');
 const saveLocationsToFile = require('./script/saveLocationsToFile.js');
 const path = require('path');
 const fs = require('fs');
+const { convertPostedOnToDate } = require('./utils/convertPostedOnToDate.js');
 const app = express();
 const PORT = 8000;
 
@@ -33,7 +34,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 });
 
-app.get('/api/locations', (req, res) => {
+app.get('/v1/api/locations', (req, res) => {
   const filePath = path.join(__dirname, 'locations.json');
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (err) {
@@ -45,7 +46,7 @@ app.get('/api/locations', (req, res) => {
   });
 });
 
-app.get('/api/locations/:company', async (req, res) => {
+app.get('/v1/api/locations/:company', async (req, res) => {
   // get the company name from the request and compare to the locations.json file
   const { company } = req.params;
   const filePath = path.join(__dirname, 'locations.json');
@@ -67,15 +68,13 @@ app.get('/api/locations/:company', async (req, res) => {
 );
 
 
-app.get('/jobs/:company', async (req, res) => {
+app.get('/v1/api/jobs/:company', async (req, res) => {
   try {
     let { company } = req.params;
     let { limit, offset, searchText, locations } = req.query;
-    console.log('Fetching job listings:', req.query, req.params, req.body)
-
 
     const basePathObject = companyPaths[company];
-    console.log('basePathObject:', basePathObject);
+
     if (!basePathObject) {
       return res.status(404).json({ error: 'Company not found' });
     }
@@ -106,7 +105,24 @@ app.get('/jobs/:company', async (req, res) => {
         },
       }
     );
-    res.json(response.data);
+
+    const jobsWithConvertedDates = response.data.jobPostings.map(job => ({
+      ...job,
+      postedOnDate: convertPostedOnToDate(job.postedOn)
+    }));
+
+    const citiesData = response.data.facets.find(f => f.facetParameter === 'locationMainGroup')?.values.find(v => v.facetParameter === 'locations')?.values;
+    const countryData = response.data.facets.find(f => f.facetParameter === 'locationMainGroup')?.values.find(v => v.facetParameter === 'locationCountry')?.values;
+
+    const locationsData = {
+      cities: citiesData || [],
+      countries: countryData || []
+    }
+    res.json({
+      ...response.data,
+      jobPostings: response.data.jobPostings,
+      locations: locationsData || {},
+    });
   } catch (error) {
     console.error('Error proxying job listings:', error);
     if (error.response) {
