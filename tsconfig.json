@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+    /* Language and Environment */
+    "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    /* Modules */
+    "module": "commonjs" /* Specify what module code is generated. */,
+    "rootDir": "./" /* Specify the root folder within your source files. */,
+    "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
+    "outDir": "./dist" /* Specify an output folder for all emitted files. */,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+    "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */,
+    /* Type Checking */
+    "strict": true /* Enable all strict type-checking options. */,
+    /* Completeness */
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
+    "paths": {
+      "@utils/*": ["utils/*.ts"],
+      "@interfaces/*": ["interface/*.ts"],
+      "@services/*": ["services/*.ts"]
+    } /* Specify path mapping to be computed relative to baseUrl option. */
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
+}

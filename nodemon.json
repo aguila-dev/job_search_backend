@@ -1,6 +1,7 @@
 {
     "ignore": ["locations.json"],
-    "watch": ["*.js", "src/"],
-    "ext": "js"
+    "watch": ["*.ts", "*.json"],
+    "ext": "ts, json",
+    "exec": "ts-node ./index.ts"
   }
   
