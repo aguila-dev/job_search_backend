@@ -1,4 +1,4 @@
 # Workout Companies
 
-- [ ] [Travelers]
-- [ ] [The_Hartford]
+- [x] [Travelers]
+- [x] [The_Hartford]
