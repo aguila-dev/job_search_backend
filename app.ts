@@ -73,7 +73,7 @@ app.use('/', (req: Request, res: Response) => {
 //   });
 // });
 
-// Error handling
+/* Error handling */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
   console.error(err.stack);

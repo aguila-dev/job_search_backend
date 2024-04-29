@@ -27,6 +27,31 @@ const companyPaths: CompanyPaths = {
       'https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/',
     buttonSelector: '.css-shvw01',
   },
+  patagonia: {
+    basePath: 'patagonia/PWCareers/jobs',
+    wdNum: 'wd5',
+    frontendUri: 'https://patagonia.wd5.myworkdayjobs.com/PWCareers',
+    buttonSelector: '.css-shvw01',
+  },
+  georgetown: {
+    basePath: 'georgetown/Georgetown_Admin_Careers/jobs',
+    wdNum: 'wd1',
+    frontendUri:
+      'https://georgetown.wd1.myworkdayjobs.com/Georgetown_Admin_Careers',
+    buttonSelector: '.css-shvw01',
+  },
+  travelers: {
+    basePath: 'travelers/External/jobs',
+    wdNum: 'wd5',
+    frontendUri: 'https://travelers.wd5.myworkdayjobs.com/External',
+    buttonSelector: '.css-shvw01',
+  },
+  thehartford: {
+    basePath: 'thehartford/Careers_External/jobs',
+    wdNum: 'wd5',
+    frontendUri: 'https://thehartford.wd5.myworkdayjobs.com/Careers_External',
+    buttonSelector: '.css-shvw01',
+  },
 };
 
 export default companyPaths;
