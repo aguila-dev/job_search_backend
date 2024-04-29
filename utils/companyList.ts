@@ -20,6 +20,13 @@ const companyPaths: CompanyPaths = {
     buttonSelector: '.css-shvw01',
     locationRadio: '.css-n9nn59',
   },
+  nvidia: {
+    basePath: 'nvidia/NVIDIAExternalCareerSite/jobs',
+    wdNum: 'wd5',
+    frontendUri:
+      'https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/',
+    buttonSelector: '.css-shvw01',
+  },
 };
 
 export default companyPaths;

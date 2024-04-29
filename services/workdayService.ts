@@ -1,16 +1,18 @@
 import {
+  Query,
   WorkdayFacet,
   WorkdayJobsResponse,
 } from '@interfaces/IWorkdayController';
 import axios from 'axios';
 import { convertPostedOnToDate } from '@utils/convertPostedOnToDate';
 
-export async function fetchWorkdayData(url: string, params: any) {
+export async function fetchWorkdayData(url: string, params: Query) {
   let { limit, offset, searchText, locations } = params;
+
   return axios.post<WorkdayJobsResponse>(
     url,
     {
-      appliedFacets: locations,
+      appliedFacets: { locations },
       limit,
       offset,
       searchText,

@@ -2,12 +2,13 @@ export interface Query {
   limit?: string | number;
   offset?: string | number;
   searchText?: string;
-  locations?: LocationsData;
+  locations?: any[];
+  locationCountry?: any[];
 }
 
 export interface LocationsData {
-  cities?: any[];
-  countries?: any[];
+  locations?: string[];
+  locationCountry?: string[];
 }
 
 export interface WorkdayJobsResponse {

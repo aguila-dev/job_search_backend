@@ -13,7 +13,7 @@ export const dynamicDaysAgo = (days: number) => {
  */
 
 export const convertPostedOnToDate = (postedOn: string) => {
-  postedOn = postedOn.toLowerCase();
+  postedOn = postedOn?.toLowerCase();
   const today = new Date();
   let postedOnDate = new Date();
   if (postedOn.includes('today')) {

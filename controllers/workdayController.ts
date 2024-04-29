@@ -11,19 +11,16 @@ export const getWorkdayJobs = async (req: Request, res: Response) => {
   try {
     const { company } = req.params as { company: string };
     const queryParams = parseQueryParams(req.query);
-
     const basePathObject = companyPaths[company];
     if (!basePathObject) {
       return res.status(404).json({ error: 'Company not found' });
     }
-
     const url = buildApiUrl(company, basePathObject);
     const response = await fetchWorkdayData(url, queryParams);
     const processedData = processResponseDataAndIncludeLocations(response.data);
-
     res.json(processedData);
   } catch (error: any) {
-    console.error('Error proxying job listings:', error);
+    console.error('Error getting job listings:', error);
     if (error.response) {
       console.error('Error data:', error.response.data);
       console.error('Error status:', error.response.status);

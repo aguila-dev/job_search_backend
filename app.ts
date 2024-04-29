@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
 
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
 // const fetchAllCompanyLocations = require('./script/getLocations.js');
 // const saveLocationsToFile = require('./script/saveLocationsToFile.js');
 // const path = require('path');
