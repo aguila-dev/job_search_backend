@@ -1,13 +1,9 @@
+require('dotenv').config();
 import { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-
-// const fetchAllCompanyLocations = require('./script/getLocations.js');
-// const saveLocationsToFile = require('./script/saveLocationsToFile.js');
-// const path = require('path');
-// const fs = require('fs');
-// const { convertPostedOnToDate } = require('./utils/convertPostedOnToDate.js');
+import { API } from './constants';
 const app = express();
 
 import apiRoutes from './api';
@@ -29,8 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 // }
 
 // initializeLocations();
-
-app.use('/v1/api', apiRoutes);
+console.log(`/${API.VERSION}/${API.ENDPOINT}`);
+app.use(`/${API.VERSION}/${API.ENDPOINT}`, apiRoutes);
 
 app.use('/', (req: Request, res: Response) => {
   res.status(401).json({

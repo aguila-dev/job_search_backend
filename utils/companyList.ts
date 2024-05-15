@@ -52,6 +52,12 @@ const companyPaths: CompanyPaths = {
     frontendUri: 'https://thehartford.wd5.myworkdayjobs.com/Careers_External',
     buttonSelector: '.css-shvw01',
   },
+  capitalone: {
+    basePath: 'capitalone/Capital_One/jobs',
+    wdNum: 'wd1',
+    frontendUri: 'https://capitalone.wd1.myworkdayjobs.com/Capital_One/',
+    buttonSelector: '.css-shvw01',
+  },
 };
 
 export default companyPaths;
