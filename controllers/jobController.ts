@@ -2,15 +2,19 @@ import { Request, Response, NextFunction } from 'express';
 import { Job, Company, JobSource } from '../db';
 import { JobSourceEnum } from '@interfaces/IModels';
 import { Op } from 'sequelize';
+import { getPaginationOptions, getPagingData } from '@utils/pagination';
 
 // Get all jobs
 export const getAllJobs = async (req: Request, res: Response) => {
   try {
-    const jobs = await Job.findAll({ include: [Company] });
-    const data = {
-      count: jobs.length,
-      jobs,
-    };
+    const { page, pageSize, offset, limit } = getPaginationOptions(req);
+    const { count, rows: jobs } = await Job.findAndCountAll({
+      include: [Company],
+      order: [['lastUpdatedAt', 'DESC']],
+      limit,
+      offset,
+    });
+    const data = getPagingData(count, jobs, page, pageSize);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch jobs' });
@@ -25,14 +29,17 @@ export const getJobsByCompany = async (req: Request, res: Response) => {
     if (!companyRecord) {
       return res.status(404).json({ error: 'Company not found' });
     }
-    const jobs = await Job.findAll({
+    const { page, pageSize, offset, limit } = getPaginationOptions(req);
+
+    const { count, rows: jobs } = await Job.findAndCountAll({
       where: { companyId: companyRecord.id },
       include: [Company],
+      order: [['lastUpdatedAt', 'DESC']],
+      limit,
+      offset,
     });
-    const data = {
-      count: jobs.length,
-      jobs,
-    };
+
+    const data = getPagingData(count, jobs, page, pageSize);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch jobs for the company' });
@@ -42,7 +49,9 @@ export const getJobsByCompany = async (req: Request, res: Response) => {
 // Get Greenhouse jobs
 export const getGreenhouseJobs = async (req: Request, res: Response) => {
   try {
-    const jobs = await Job.findAll({
+    const { page, pageSize, offset, limit } = getPaginationOptions(req);
+
+    const { count, rows: jobs } = await Job.findAndCountAll({
       include: [
         Company,
         {
@@ -50,11 +59,11 @@ export const getGreenhouseJobs = async (req: Request, res: Response) => {
           where: { name: JobSourceEnum.GREENHOUSE },
         },
       ],
+      limit,
+      offset,
     });
-    const data = {
-      count: jobs.length,
-      jobs,
-    };
+
+    const data = getPagingData(count, jobs, page, pageSize);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Greenhouse jobs' });
@@ -64,7 +73,9 @@ export const getGreenhouseJobs = async (req: Request, res: Response) => {
 // Get Workday jobs
 export const getWorkdayJobs = async (req: Request, res: Response) => {
   try {
-    const jobs = await Job.findAll({
+    const { page, pageSize, offset, limit } = getPaginationOptions(req);
+
+    const { count, rows: jobs } = await Job.findAndCountAll({
       include: [
         Company,
         {
@@ -72,11 +83,11 @@ export const getWorkdayJobs = async (req: Request, res: Response) => {
           where: { name: JobSourceEnum.WORKDAY },
         },
       ],
+      limit,
+      offset,
     });
-    const data = {
-      count: jobs.length,
-      jobs,
-    };
+
+    const data = getPagingData(count, jobs, page, pageSize);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch Workday jobs' });

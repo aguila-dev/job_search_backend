@@ -3,6 +3,7 @@ import app from './app';
 import cron from 'node-cron';
 const PORT = process.env.PORT;
 import { db } from './db';
+import redisClient from '@services/redisClient';
 
 const syncDatabase = async () => {
   try {
@@ -22,8 +23,15 @@ const startServer = async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Server running in ${process.env.NODE_ENV} mode`);
 
-      // run the database population script in background
-      await populateDatabase();
+      // Run the database population script in the background
+      console.log('Populating database...');
+      populateDatabase()
+        .then(() => {
+          console.log('Database populated.');
+        })
+        .catch((error) => {
+          console.error('Error populating database:', error);
+        });
     });
 
     server.on('error', (error: any) => {
