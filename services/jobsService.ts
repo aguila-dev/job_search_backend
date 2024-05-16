@@ -14,21 +14,27 @@ import {
 import { extractJobId } from '@utils/extractJobId';
 
 // GREENHOUSE CALL
-async function fetchAndSaveGreenhouseJobs(companyName: string) {
-  const config: CompanyConfig = companyConfig.greenhouse[companyName];
-  if (!config || !config.active) {
-    throw new Error(
-      `No active configuration found for Greenhouse company: ${companyName}`
-    );
+async function fetchAndSaveGreenhouseJobs({ name, slug, apiEndpoint }: any) {
+  const [company] = await Company.findOrCreate({
+    where: {
+      name,
+      slug,
+      apiEndpoint,
+    },
+  });
+  const backendUrl = apiEndpoint;
+  if (!backendUrl) {
+    throw new Error(`No apiEndpoint found for Greenhouse company: ${name}`);
   }
+  const response = await axios.get(backendUrl);
 
-  const url = config.frontendUri;
-  const response = await axios.get(url);
   const jobs = response.data.jobs;
 
-  const [company] = await Company.findOrCreate({
-    where: { name: config.title, slug: config.name },
-  });
+  if (!jobs || jobs.length === 0) {
+    console.warn(`No jobs found for Greenhouse company: ${name}`);
+    return;
+  }
+
   const [jobSource] = await JobSource.findOrCreate({
     where: { name: JobSourceEnum.GREENHOUSE },
   });
@@ -53,17 +59,11 @@ async function fetchAndSaveGreenhouseJobs(companyName: string) {
 }
 
 // WORKDAY CALL
-async function fetchAndSaveWorkdayJobs(companyName: string) {
-  const config: WorkdayCompanyConfig = companyConfig.workday[companyName];
-  if (!config || !config.active) {
-    throw new Error(
-      `No active configuration found for Workday company: ${companyName}`
-    );
+async function fetchAndSaveWorkdayJobs({ name, slug, apiEndpoint }: any) {
+  const backendUrl = apiEndpoint;
+  if (!backendUrl) {
+    throw new Error(`No apiEndpoint found for Greenhouse company: ${name}`);
   }
-
-  const name = config.name;
-  const { basePathObject } = config;
-  const backendUrl = buildApiUrl(name, basePathObject);
 
   let offset = 0;
   const limit = 20;
@@ -71,8 +71,13 @@ async function fetchAndSaveWorkdayJobs(companyName: string) {
   let jobsFetched = 0;
 
   const [company] = await Company.findOrCreate({
-    where: { name: config.title, slug: config.name },
+    where: {
+      name,
+      slug,
+      apiEndpoint,
+    },
   });
+
   const [jobSource] = await JobSource.findOrCreate({
     where: { name: JobSourceEnum.WORKDAY },
   });
@@ -101,7 +106,7 @@ async function fetchAndSaveWorkdayJobs(companyName: string) {
         companyId: company.id,
         jobSourceId: jobSource.id,
         title: jobData.title,
-        absoluteUrl: `${config.frontendUri}${jobData.externalPath}`,
+        absoluteUrl: `${company.apiEndpoint}${jobData.externalPath}`,
         location: jobData.locationsText,
         jobId: jobId?.toString() || '',
         requisitionId: jobId?.toString() || '',

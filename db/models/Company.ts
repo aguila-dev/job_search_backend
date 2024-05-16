@@ -36,5 +36,14 @@ const Company = db.define('company', {
     //   isUrl: true,
     // },
   },
+  apiEndpoint: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  active: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
 });
 export default Company;

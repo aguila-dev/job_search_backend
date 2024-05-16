@@ -6,11 +6,30 @@ import { getPaginationOptions, getPagingData } from '@utils/pagination';
 
 // Get all jobs
 export const getAllJobs = async (req: Request, res: Response) => {
+  const { search, sort, location } = req.query;
   try {
     const { page, pageSize, offset, limit } = getPaginationOptions(req);
+
+    const where: any = {};
+    if (search) {
+      where[Op.or] = [
+        { title: { [Op.iLike]: `%${search}%` } },
+        { location: { [Op.iLike]: `%${search}%` } },
+      ];
+    }
+    if (location) {
+      where.location = { [Op.iLike]: `%${location}%` };
+    }
+
+    const order =
+      sort === 'oldest'
+        ? [['lastUpdatedAt', 'ASC']]
+        : [['lastUpdatedAt', 'DESC']];
+
     const { count, rows: jobs } = await Job.findAndCountAll({
+      where,
       include: [Company],
-      order: [['lastUpdatedAt', 'DESC']],
+      order,
       limit,
       offset,
     });
@@ -24,6 +43,7 @@ export const getAllJobs = async (req: Request, res: Response) => {
 // Get jobs by company
 export const getJobsByCompany = async (req: Request, res: Response) => {
   const { company } = req.params;
+  const { search, sort, location } = req.query;
   try {
     const companyRecord = await Company.findOne({ where: { slug: company } });
     if (!companyRecord) {
@@ -31,10 +51,26 @@ export const getJobsByCompany = async (req: Request, res: Response) => {
     }
     const { page, pageSize, offset, limit } = getPaginationOptions(req);
 
+    const where: any = { companyId: companyRecord.id };
+    if (search) {
+      where[Op.or] = [
+        { title: { [Op.iLike]: `%${search}%` } },
+        { location: { [Op.iLike]: `%${search}%` } },
+      ];
+    }
+    if (location) {
+      where.location = { [Op.iLike]: `%${location}%` };
+    }
+
+    const order =
+      sort === 'oldest'
+        ? [['lastUpdatedAt', 'ASC']]
+        : [['lastUpdatedAt', 'DESC']];
+
     const { count, rows: jobs } = await Job.findAndCountAll({
-      where: { companyId: companyRecord.id },
+      where,
       include: [Company],
-      order: [['lastUpdatedAt', 'DESC']],
+      order,
       limit,
       offset,
     });

@@ -1,4 +1,7 @@
-import { populateDatabase } from '@services/populateDatabase';
+import {
+  populateDatabase,
+  updateDatabaseJobListings,
+} from '@services/populateDatabase';
 import app from './app';
 import cron from 'node-cron';
 const PORT = process.env.PORT;
@@ -24,14 +27,14 @@ const startServer = async () => {
       console.log(`Server running in ${process.env.NODE_ENV} mode`);
 
       // Run the database population script in the background
-      console.log('Populating database...');
-      populateDatabase()
-        .then(() => {
-          console.log('Database populated.');
-        })
-        .catch((error) => {
-          console.error('Error populating database:', error);
-        });
+      // console.log('Populating database...');
+      // populateDatabase()
+      //   .then(() => {
+      //     console.log('Database populated.');
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error populating database:', error);
+      //   });
     });
 
     server.on('error', (error: any) => {
@@ -70,7 +73,7 @@ const startServer = async () => {
     // Schedule a cron job to populate the database every 3 hours
     cron.schedule('0 */3 * * *', async () => {
       console.log('Running cron job to populate database...');
-      await populateDatabase();
+      await updateDatabaseJobListings();
       console.log('Cron job completed. Database is populated');
     });
   } catch (error) {

@@ -1,6 +1,6 @@
 import { CompanyConfigurations } from '@interfaces/IUtilsCompanyList';
 
-const LINK = 'https://boards-api.greenhouse.io/v1/boards';
+export const LINK = 'https://boards-api.greenhouse.io/v1/boards';
 
 export const companyConfig: CompanyConfigurations = {
   greenhouse: {
