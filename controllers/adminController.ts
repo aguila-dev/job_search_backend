@@ -7,7 +7,6 @@ import {
 } from '@services/jobsService';
 import { LINK } from '../config/companyConfig';
 import { buildApiUrl } from '@utils/apiUtils';
-import { on } from 'events';
 
 // Create a new company and its associated JobSource
 export const createCompany = async (req: Request, res: Response) => {
