@@ -6,7 +6,7 @@ import { db } from './db';
 
 const syncDatabase = async () => {
   try {
-    await db.sync({ force: true });
+    await db.sync();
     console.log('Database is synced.');
   } catch (error) {
     console.error('Error syncing database:', error);

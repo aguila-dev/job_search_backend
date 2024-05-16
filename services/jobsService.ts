@@ -34,7 +34,7 @@ async function fetchAndSaveGreenhouseJobs(companyName: string) {
   });
 
   for (const jobData of jobs) {
-    await Job.create({
+    const jobValues = {
       companyId: company.id,
       jobSourceId: jobSource.id,
       title: jobData.title,
@@ -45,6 +45,9 @@ async function fetchAndSaveGreenhouseJobs(companyName: string) {
       dataCompliance: jobData.data_compliance,
       metadata: jobData.metadata,
       lastUpdatedAt: jobData.updated_at,
+    };
+    await Job.upsert(jobValues, {
+      conflictFields: ['jobId', 'jobSourceId'],
     });
   }
 }
@@ -80,7 +83,7 @@ async function fetchAndSaveWorkdayJobs(companyName: string) {
 
   for (const jobData of jobs) {
     const jobId = extractJobId(jobData.externalPath, jobData.bulletFields);
-    await Job.create({
+    const jobValues = {
       companyId: company.id,
       jobSourceId: jobSource.id,
       title: jobData.title,
@@ -90,6 +93,9 @@ async function fetchAndSaveWorkdayJobs(companyName: string) {
       requisitionId: jobId?.toString() || '',
       metadata: {},
       lastUpdatedAt: jobData.postedOnDate,
+    };
+    await Job.upsert(jobValues, {
+      conflictFields: ['jobId', 'jobSourceId'],
     });
   }
 }

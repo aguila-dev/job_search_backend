@@ -41,7 +41,13 @@ if (isDevelopment && isTest) {
     },
   });
 } else {
-  throw new Error('PROD_DATABASE_URL environment variable is not set.');
+  throw new Error(
+    `PROD_DATABASE_URL environment variable is not set. ${
+      isDevelopment
+        ? 'Please set it in your .env file. You are in development mode'
+        : ''
+    }`
+  );
 }
 
 export default db;
