@@ -41,7 +41,7 @@ const Job = db.define(
       },
     },
     absoluteUrl: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(500),
       allowNull: false,
       validate: {
         isUrl: true,

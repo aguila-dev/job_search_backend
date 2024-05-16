@@ -16,11 +16,14 @@ const syncDatabase = async () => {
 const startServer = async () => {
   try {
     await syncDatabase();
-    await populateDatabase();
+
     // Capture the server instance
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Server running in ${process.env.NODE_ENV} mode`);
+
+      // run the database population script in background
+      await populateDatabase();
     });
 
     server.on('error', (error: any) => {

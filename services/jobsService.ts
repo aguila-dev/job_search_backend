@@ -60,19 +60,15 @@ async function fetchAndSaveWorkdayJobs(companyName: string) {
       `No active configuration found for Workday company: ${companyName}`
     );
   }
+
   const name = config.name;
   const { basePathObject } = config;
   const backendUrl = buildApiUrl(name, basePathObject);
 
-  const response = await fetchWorkdayData(backendUrl, {
-    limit: 20,
-    offset: 0,
-    searchText: '',
-    locations: [],
-  });
-  const processedData = processResponseDataAndIncludeLocations(response.data);
-
-  const jobs = processedData.jobPostings;
+  let offset = 0;
+  const limit = 20;
+  let totalJobs = 0;
+  let jobsFetched = 0;
 
   const [company] = await Company.findOrCreate({
     where: { name: config.title, slug: config.name },
@@ -81,22 +77,48 @@ async function fetchAndSaveWorkdayJobs(companyName: string) {
     where: { name: JobSourceEnum.WORKDAY },
   });
 
-  for (const jobData of jobs) {
-    const jobId = extractJobId(jobData.externalPath, jobData.bulletFields);
-    const jobValues = {
-      companyId: company.id,
-      jobSourceId: jobSource.id,
-      title: jobData.title,
-      absoluteUrl: `${config.frontendUri}${jobData.externalPath}`,
-      location: jobData.locationsText,
-      jobId: jobId?.toString() || '',
-      requisitionId: jobId?.toString() || '',
-      metadata: {},
-      lastUpdatedAt: jobData.postedOnDate,
-    };
-    await Job.upsert(jobValues, {
-      conflictFields: ['jobId', 'jobSourceId'],
+  while (true) {
+    const response = await fetchWorkdayData(backendUrl, {
+      limit,
+      offset,
+      searchText: '',
+      locations: [],
     });
+    const processedData = processResponseDataAndIncludeLocations(response.data);
+
+    const jobs = processedData.jobPostings;
+    if (offset === 0) {
+      totalJobs = processedData.total;
+    }
+
+    if (jobs.length === 0) {
+      break;
+    }
+
+    for (const jobData of jobs) {
+      const jobId = extractJobId(jobData.externalPath, jobData.bulletFields);
+      const jobValues = {
+        companyId: company.id,
+        jobSourceId: jobSource.id,
+        title: jobData.title,
+        absoluteUrl: `${config.frontendUri}${jobData.externalPath}`,
+        location: jobData.locationsText,
+        jobId: jobId?.toString() || '',
+        requisitionId: jobId?.toString() || '',
+        metadata: {},
+        lastUpdatedAt: jobData.postedOnDate,
+      };
+      await Job.upsert(jobValues, {
+        conflictFields: ['jobId', 'jobSourceId'],
+      });
+    }
+
+    jobsFetched += jobs.length;
+    if (jobsFetched >= totalJobs) {
+      break;
+    }
+
+    offset += limit;
   }
 }
 

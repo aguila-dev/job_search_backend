@@ -27,7 +27,10 @@ export async function fetchWorkdayData(url: string, params: Query) {
 }
 
 export function processResponseDataAndIncludeLocations(responseData: any) {
-  const jobsWithConvertedDates = responseData.jobPostings.map((job: any) => ({
+  const validJobs = responseData.jobPostings.filter((job: any) => {
+    return job.externalPath && job.title && job.postedOn;
+  });
+  const jobsWithConvertedDates = validJobs.map((job: any) => ({
     ...job,
     postedOnDate: convertPostedOnToDate(job.postedOn),
   }));
