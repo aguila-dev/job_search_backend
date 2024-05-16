@@ -7,5 +7,6 @@ router.get(
   '/not-active',
   applicationController.getNoLongerConsideringApplications
 );
+router.put('/:id', applicationController.updateJobApplication);
 
 export default router;
