@@ -3,53 +3,27 @@ import {
   fetchAndSaveWorkdayJobs,
 } from './jobsService';
 import { companyConfig } from '../config/companyConfig';
-import redisClient from './redisClient';
+// import redisClient from './redisClient';
 import { buildApiUrl } from '@utils/apiUtils';
 import { Company, JobSource } from 'db';
 import { JobSourceEnum } from '@interfaces/IModels';
 
-const clearCacheKeys = async (pattern: string) => {
-  const keys = await redisClient.keys(pattern);
-  if (keys.length > 0) {
-    await redisClient.del(keys);
-  }
-};
 export const populateDatabase = async () => {
   try {
-    // Clear the cache before populating the database
-    // Clear the cache before populating the database
-    // console.log('Clearing cache...');
-    // await clearCacheKeys('jobs-*');
-    // await clearCacheKeys('company-jobs-*');
-    // await clearCacheKeys('greenhouse-jobs-*');
-    // await clearCacheKeys('workday-jobs-*');
-    // await clearCacheKeys('todays-jobs-*');
-    // console.log('Cache cleared.');
-
     // Populate Greenhouse jobs
     // Populate jobs from predefined configuration file
     for (const companyName in companyConfig.greenhouse) {
       if (companyConfig.greenhouse[companyName].active) {
         const config = companyConfig.greenhouse[companyName];
-        console.log(
-          'Populating Greenhouse jobs for config file:',
-          config.title
-        );
+        console.log('Populating Greenhouse jobs for config file:', config);
         await fetchAndSaveGreenhouseJobs({
           name: config.title,
           slug: config.name,
-          apiEndpoint: config.frontendUri,
+          frontendUrl: `https://boards.greenhouse.io/${config.name}`,
+          apiEndpoint: config.backendApi,
         });
       }
     }
-
-    // Populate Workday jobs
-    // for (const companyName in companyConfig.workday) {
-    //   if (companyConfig.workday[companyName].active) {
-    //     console.log('Populating Workday jobs for:', companyName);
-    //     await fetchAndSaveWorkdayJobs(companyName);
-    //   }
-    // }
     for (const companyName in companyConfig.workday) {
       if (companyConfig.workday[companyName].active) {
         const config = companyConfig.workday[companyName];
@@ -57,26 +31,11 @@ export const populateDatabase = async () => {
         await fetchAndSaveWorkdayJobs({
           name: config.title,
           slug: config.name,
+          frontendUrl: config.frontendUrl,
           apiEndpoint: buildApiUrl(config.name, config.basePathObject),
         });
       }
     }
-
-    // Populate jobs for companies added dynamically by admin
-    // const companies = await Company.findAll();
-    // for (const company of companies) {
-    //   const jobSource = await JobSource.findOne({
-    //     where: { id: company.jobSourceId },
-    //   });
-    //   if (jobSource.name === JobSourceEnum.GREENHOUSE) {
-    //     console.log('Populating Greenhouse jobs for:', company.name);
-    //     await fetchAndSaveGreenhouseJobs(company);
-    //   } else if (jobSource.name === JobSourceEnum.WORKDAY) {
-    //     console.log('Populating Workday jobs for:', company.name);
-    //     await fetchAndSaveWorkdayJobs(company);
-    //   }
-    // }
-
     console.log('Database populated with job listings.');
   } catch (error) {
     console.error('Error populating database:', error);
@@ -85,8 +44,17 @@ export const populateDatabase = async () => {
 
 export const updateDatabaseJobListings = async () => {
   try {
-    const companies = await Company.findAll();
+    const companies = await Company.findAll({
+      where: { active: true },
+      include: [{ model: JobSource }],
+    });
+    // console.log('Companies:', companies);
     for (const company of companies) {
+      console.log('company:', {
+        id: company.id,
+        name: company.name,
+        jobSourceId: company?.jobSourceId,
+      });
       const jobSource = await JobSource.findOne({
         where: { id: company.jobSourceId },
       });

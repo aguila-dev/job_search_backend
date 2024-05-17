@@ -13,6 +13,9 @@ Company.hasMany(Job, { foreignKey: 'companyId' });
 Job.belongsTo(JobSource, { foreignKey: 'jobSourceId' });
 JobSource.hasMany(Job, { foreignKey: 'jobSourceId' });
 
+Company.belongsTo(JobSource, { foreignKey: 'jobSourceId' });
+JobSource.hasMany(Company, { foreignKey: 'jobSourceId' });
+
 JobApplication.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(JobApplication, { foreignKey: 'userId' });
 

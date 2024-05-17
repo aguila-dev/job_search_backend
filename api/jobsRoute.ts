@@ -23,6 +23,13 @@ router.get(
   //   cacheMiddleware('company-jobs'),
   jobController.getJobsByCompany
 );
+
+router.get(
+  '/workday/individualJob',
+  //   cacheMiddleware('job'),
+  jobController.getJobById
+);
+
 router.get(
   '/todays-jobs',
   //   cacheMiddleware('todays-jobs'),

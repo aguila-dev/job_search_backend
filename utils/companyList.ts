@@ -4,59 +4,51 @@ const companyPaths: CompanyPaths = {
   caci: {
     basePath: 'caci/External/jobs',
     wdNum: 'wd1',
-    frontendUri: 'https://caci.wd1.myworkdayjobs.com/External/',
-    buttonSelector: '.css-shvw01',
+    frontendUrl: 'https://caci.wd1.myworkdayjobs.com/External/',
   },
   bah: {
     basePath: 'bah/BAH_Jobs/jobs',
     wdNum: 'wd1',
-    frontendUri: 'https://bah.wd1.myworkdayjobs.com/BAH_Jobs',
-    buttonSelector: '.css-1rgftiz',
+    frontendUrl: 'https://bah.wd1.myworkdayjobs.com/BAH_Jobs',
   },
   accenture: {
     basePath: 'accenture/AccentureCareers/jobs',
     wdNum: 'wd3',
-    frontendUri: 'https://accenture.wd3.myworkdayjobs.com/AccentureCareers/',
-    buttonSelector: '.css-shvw01',
+    frontendUrl: 'https://accenture.wd3.myworkdayjobs.com/AccentureCareers/',
+
     locationRadio: '.css-n9nn59',
   },
   nvidia: {
     basePath: 'nvidia/NVIDIAExternalCareerSite/jobs',
     wdNum: 'wd5',
-    frontendUri:
+    frontendUrl:
       'https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/',
-    buttonSelector: '.css-shvw01',
   },
   patagonia: {
     basePath: 'patagonia/PWCareers/jobs',
     wdNum: 'wd5',
-    frontendUri: 'https://patagonia.wd5.myworkdayjobs.com/PWCareers',
-    buttonSelector: '.css-shvw01',
+    frontendUrl: 'https://patagonia.wd5.myworkdayjobs.com/PWCareers',
   },
   georgetown: {
     basePath: 'georgetown/Georgetown_Admin_Careers/jobs',
     wdNum: 'wd1',
-    frontendUri:
+    frontendUrl:
       'https://georgetown.wd1.myworkdayjobs.com/Georgetown_Admin_Careers',
-    buttonSelector: '.css-shvw01',
   },
   travelers: {
     basePath: 'travelers/External/jobs',
     wdNum: 'wd5',
-    frontendUri: 'https://travelers.wd5.myworkdayjobs.com/External',
-    buttonSelector: '.css-shvw01',
+    frontendUrl: 'https://travelers.wd5.myworkdayjobs.com/External',
   },
   thehartford: {
     basePath: 'thehartford/Careers_External/jobs',
     wdNum: 'wd5',
-    frontendUri: 'https://thehartford.wd5.myworkdayjobs.com/Careers_External',
-    buttonSelector: '.css-shvw01',
+    frontendUrl: 'https://thehartford.wd5.myworkdayjobs.com/Careers_External',
   },
   capitalone: {
     basePath: 'capitalone/Capital_One/jobs',
     wdNum: 'wd1',
-    frontendUri: 'https://capitalone.wd1.myworkdayjobs.com/Capital_One/',
-    buttonSelector: '.css-shvw01',
+    frontendUrl: 'https://capitalone.wd1.myworkdayjobs.com/Capital_One/',
   },
 };
 

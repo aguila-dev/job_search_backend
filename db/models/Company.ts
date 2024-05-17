@@ -1,5 +1,6 @@
 import db from '../db';
 import { DataTypes } from 'sequelize';
+import path from 'path';
 
 const Company = db.define('company', {
   id: {
@@ -21,20 +22,17 @@ const Company = db.define('company', {
       notEmpty: true,
     },
   },
-  website: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isUrl: true,
-    },
-  },
   logo: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: '/assets/palceholder.png',
+    defaultValue: path.join('/images', 'placeholder.png'),
     // validate: {
     //   isUrl: true,
     // },
+  },
+  frontendUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   apiEndpoint: {
     type: DataTypes.STRING,

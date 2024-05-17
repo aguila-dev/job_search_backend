@@ -6,14 +6,42 @@ import app from './app';
 import cron from 'node-cron';
 const PORT = process.env.PORT;
 import { db } from './db';
-import redisClient from '@services/redisClient';
+// import redisClient from '@services/redisClient';
 
 const syncDatabase = async () => {
+  const syncOptions = {
+    force: false,
+    alter: false,
+  };
+  if (process.env.DROP_DB === 'true') {
+    syncOptions.force = true;
+    console.log('Dropping database...');
+  } else if (process.env.ALTER_DB === 'true') {
+    syncOptions.alter = true;
+    console.log('Altering database...');
+  } else {
+    console.log('Syncing database...');
+  }
   try {
-    await db.sync();
+    await db.sync(syncOptions);
     console.log('Database is synced.');
   } catch (error) {
     console.error('Error syncing database:', error);
+  }
+};
+
+const seedOrUpdateDatabase = async () => {
+  try {
+    if (process.env.SEED_DB === 'true') {
+      console.log('Populating database...');
+      await populateDatabase();
+    } else {
+      console.log('Updating database job listings...');
+      // await updateDatabaseJobListings();
+      console.log('Database job listings updated.');
+    }
+  } catch (error) {
+    console.error('Error seeding or updating database:', error);
   }
 };
 
@@ -25,17 +53,9 @@ const startServer = async () => {
     const server = app.listen(PORT, async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Server running in ${process.env.NODE_ENV} mode`);
-
-      // Run the database population script in the background
-      // console.log('Populating database...');
-      // populateDatabase()
-      //   .then(() => {
-      //     console.log('Database populated.');
-      //   })
-      //   .catch((error) => {
-      //     console.error('Error populating database:', error);
-      //   });
     });
+
+    await seedOrUpdateDatabase();
 
     server.on('error', (error: any) => {
       if (error.code === 'EADDRINUSE') {
@@ -72,9 +92,9 @@ const startServer = async () => {
 
     // Schedule a cron job to populate the database every 3 hours
     cron.schedule('0 */3 * * *', async () => {
-      console.log('Running cron job to populate database...');
+      console.log('Running cron job to update database...');
       await updateDatabaseJobListings();
-      console.log('Cron job completed. Database is populated');
+      console.log('Cron job completed. Database is updated');
     });
   } catch (error) {
     console.error('Error starting server:', error);

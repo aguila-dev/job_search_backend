@@ -5,15 +5,15 @@ export interface CompanyPaths {
 export interface Company {
   basePath: string;
   wdNum: string;
-  frontendUri: string;
-  buttonSelector: string;
+  frontendUrl: string;
   locationRadio?: string;
 }
 
 export interface CompanyConfig {
   title: string;
   name: string;
-  frontendUri: string;
+  backendApi?: string;
+  frontendUrl?: string;
   active: boolean;
   logo?: string;
 }
@@ -27,7 +27,7 @@ export interface WorkdayBasePath {
 }
 export interface WorkdayCompanyConfig extends CompanyConfig {
   basePathObject: WorkdayBasePath;
-  frontendUri: string;
+  frontendUrl: string;
 }
 
 export interface WorkdayConfig {

@@ -7,11 +7,13 @@ import { API } from './constants';
 const app = express();
 
 import apiRoutes from './api';
+import path from 'path';
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 // async function initializeLocations() {
 //   try {

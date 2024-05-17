@@ -14,12 +14,22 @@ import {
 import { extractJobId } from '@utils/extractJobId';
 
 // GREENHOUSE CALL
-async function fetchAndSaveGreenhouseJobs({ name, slug, apiEndpoint }: any) {
+async function fetchAndSaveGreenhouseJobs({
+  name,
+  slug,
+  frontendUrl,
+  apiEndpoint,
+}: any) {
+  const [jobSource] = await JobSource.findOrCreate({
+    where: { name: JobSourceEnum.GREENHOUSE },
+  });
   const [company] = await Company.findOrCreate({
     where: {
       name,
       slug,
+      frontendUrl,
       apiEndpoint,
+      jobSourceId: jobSource.id,
     },
   });
   const backendUrl = apiEndpoint;
@@ -34,10 +44,6 @@ async function fetchAndSaveGreenhouseJobs({ name, slug, apiEndpoint }: any) {
     console.warn(`No jobs found for Greenhouse company: ${name}`);
     return;
   }
-
-  const [jobSource] = await JobSource.findOrCreate({
-    where: { name: JobSourceEnum.GREENHOUSE },
-  });
 
   for (const jobData of jobs) {
     const jobValues = {
@@ -59,7 +65,12 @@ async function fetchAndSaveGreenhouseJobs({ name, slug, apiEndpoint }: any) {
 }
 
 // WORKDAY CALL
-async function fetchAndSaveWorkdayJobs({ name, slug, apiEndpoint }: any) {
+async function fetchAndSaveWorkdayJobs({
+  name,
+  slug,
+  frontendUrl,
+  apiEndpoint,
+}: any) {
   const backendUrl = apiEndpoint;
   if (!backendUrl) {
     throw new Error(`No apiEndpoint found for Greenhouse company: ${name}`);
@@ -70,16 +81,18 @@ async function fetchAndSaveWorkdayJobs({ name, slug, apiEndpoint }: any) {
   let totalJobs = 0;
   let jobsFetched = 0;
 
+  const [jobSource] = await JobSource.findOrCreate({
+    where: { name: JobSourceEnum.WORKDAY },
+  });
+
   const [company] = await Company.findOrCreate({
     where: {
       name,
       slug,
+      frontendUrl,
       apiEndpoint,
+      jobSourceId: jobSource.id,
     },
-  });
-
-  const [jobSource] = await JobSource.findOrCreate({
-    where: { name: JobSourceEnum.WORKDAY },
   });
 
   while (true) {
@@ -106,7 +119,7 @@ async function fetchAndSaveWorkdayJobs({ name, slug, apiEndpoint }: any) {
         companyId: company.id,
         jobSourceId: jobSource.id,
         title: jobData.title,
-        absoluteUrl: `${company.apiEndpoint}${jobData.externalPath}`,
+        absoluteUrl: `${company.frontendUrl}${jobData.externalPath}`,
         location: jobData.locationsText,
         jobId: jobId?.toString() || '',
         requisitionId: jobId?.toString() || '',
