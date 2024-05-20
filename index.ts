@@ -4,7 +4,7 @@ import {
 } from '@services/populateDatabase';
 import app from './app';
 import cron from 'node-cron';
-const PORT = process.env.PORT;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000;
 import { db } from './db';
 // import redisClient from '@services/redisClient';
 
@@ -37,7 +37,7 @@ const seedOrUpdateDatabase = async () => {
       await populateDatabase();
     } else {
       console.log('Updating database job listings...');
-      // await updateDatabaseJobListings();
+      await updateDatabaseJobListings();
       console.log('Database job listings updated.');
     }
   } catch (error) {
@@ -50,7 +50,7 @@ const startServer = async () => {
     await syncDatabase();
 
     // Capture the server instance
-    const server = app.listen(PORT, async () => {
+    const server = app.listen(PORT, '0.0.0.0', async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Server running in ${process.env.NODE_ENV} mode`);
     });

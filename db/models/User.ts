@@ -3,6 +3,7 @@ import { SECURE } from '../../constants';
 import CustomError from '@utils/customError';
 import db from '../db';
 import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '@interfaces/IModels';
 
@@ -53,7 +54,7 @@ const User = db.define('user', {
  * Instance method to compare the password entered by the user
  */
 User.prototype.comparePassword = function (userPwd: string): Promise<boolean> {
-  return bcrypt.compare(userPwd, this.password);
+  return bcryptjs.compare(userPwd, this.password);
 };
 
 User.prototype.generateToken = function (): string {
@@ -107,7 +108,7 @@ User.findByToken = async function (token: string): Promise<any> {
 
 const hashPwd = async (user: any) => {
   if (user.changed('password')) {
-    user.password = await bcrypt.hash(user.password, SECURE.SALT);
+    user.password = await bcryptjs.hash(user.password, SECURE.SALT);
   }
 };
 

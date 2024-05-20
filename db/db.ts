@@ -28,9 +28,17 @@ let db: typeof Sequelize;
  **/
 
 if (isDevelopment && isTest) {
-  db = new Sequelize(`${localDatabaseUrl}/${localDatabaseNameTest}`, dbConfig);
+  db = new Sequelize(`${localDatabaseUrl}/${localDatabaseNameTest}`, {
+    ...dbConfig,
+    username: process.env.LOCAL_PG_DB_USER,
+    password: process.env.LOCAL_PG_DB_PASSWORD,
+  });
 } else if (isDevelopment) {
-  db = new Sequelize(`${localDatabaseUrl}/${localDatabaseName}`, dbConfig);
+  db = new Sequelize(`${localDatabaseUrl}/${localDatabaseName}`, {
+    ...dbConfig,
+    username: process.env.LOCAL_PG_DB_USER,
+    password: process.env.LOCAL_PG_DB_PASSWORD,
+  });
 } else if (prodDatabaseUrl) {
   db = new Sequelize(prodDatabaseUrl as string, {
     ...dbConfig,

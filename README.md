@@ -14,3 +14,8 @@ This is a simple web application that allows users to view and keep track of the
 - GET /v1/api/applications/active
 - POST /v1/api/applications/active
 - PUT /v1/api/applications/:id
+
+### LEVER JOB ENDPOINTS
+
+- GET https://api.lever.co/v0/postings/alltrails?mode=json [AllTrails]
+- GET https://api.lever.co/v0/postings/articulate?mode=json [Articulate]

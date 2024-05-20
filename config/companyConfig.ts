@@ -262,6 +262,12 @@ export const companyConfig: CompanyConfigurations = {
       backendApi: `${LINK}/zwift/jobs`,
       active: true,
     },
+    euclidpower: {
+      title: 'Euclid Power',
+      name: 'euclidpower',
+      backendApi: `${LINK}/euclidpower/jobs`,
+      active: true,
+    },
   },
   workday: {
     bah: {

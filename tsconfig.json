@@ -14,6 +14,10 @@
     "sourceMap": true /* Generates corresponding '.map' file. */,
     /* Type Checking */
     "strict": true /* Enable all strict type-checking options. */,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./interface"
+    ] /* List of folders to include type definitions from. */,
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,

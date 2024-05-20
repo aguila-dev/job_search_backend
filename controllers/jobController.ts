@@ -193,7 +193,7 @@ export const getTodaysJobs = async (
     endOfDay.setHours(23, 59, 59, 999);
 
     const jobs = await Job.findAll({
-      include: [Company],
+      include: [Company, JobSource],
       where: {
         lastUpdatedAt: {
           [Op.between]: [startOfDay, endOfDay],
