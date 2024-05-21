@@ -10,7 +10,7 @@ export interface PaginationOptions {
 
 export const getPaginationOptions = (req: Request): PaginationOptions => {
   const page = parseInt(req.query.page as string, 10) || 1;
-  const pageSize = parseInt(req.query.pageSize as string, 10) || 50;
+  const pageSize = parseInt(req.query.pageSize as string, 10) || 20;
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
 

@@ -1,10 +1,18 @@
+const setTimeForDate = (date: Date, hours: number, minutes: number) => {
+  date.setHours(hours, minutes, 0, 0); // Set specific time (e.g., 1 AM or 12:30 AM)
+  return date;
+};
+
 export const yesterdayDate = () => {
   const today = new Date();
-  return today.setDate(today.getDate() - 1);
+  today.setDate(today.getDate() - 1);
+  return setTimeForDate(today, 1, 0);
 };
+
 export const dynamicDaysAgo = (days: number) => {
   const today = new Date();
-  return today.setDate(today.getDate() - days);
+  today.setDate(today.getDate() - days);
+  return setTimeForDate(today, 1, 0);
 };
 
 /**
@@ -14,21 +22,22 @@ export const dynamicDaysAgo = (days: number) => {
 
 export const convertPostedOnToDate = (postedOn: string) => {
   postedOn = postedOn?.toLowerCase();
-  const today = new Date();
   let postedOnDate = new Date();
   if (postedOn.includes('today')) {
-    postedOnDate = today;
+    postedOnDate = setTimeForDate(new Date(), 6, 30);
   } else if (postedOn.includes('yesterday')) {
-    postedOnDate = new Date(yesterdayDate());
+    postedOnDate = yesterdayDate();
   } else if (postedOn.includes('days ago')) {
     const daysAgo = parseInt(postedOn.split(' ')[1]);
-    postedOnDate = new Date(dynamicDaysAgo(daysAgo));
+    postedOnDate = dynamicDaysAgo(daysAgo);
   } else {
     postedOnDate = new Date(postedOn);
+    postedOnDate = setTimeForDate(postedOnDate, 6, 30);
   }
-  return postedOnDate.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  return postedOnDate.toISOString();
 };
+
+const today = convertPostedOnToDate('Posted Today');
+const yesterday = convertPostedOnToDate('Posted Yesterday');
+console.log('today>>', new Date(today).toDateString());
+console.log('yesterday>>', new Date(yesterday).toDateString());
