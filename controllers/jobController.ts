@@ -5,6 +5,7 @@ import { Op } from 'sequelize';
 import { getPaginationOptions, getPagingData } from '@utils/pagination';
 import { fetchWorkdayData } from '@services/workdayService';
 import axios from 'axios';
+import { start } from 'repl';
 
 // Get all jobs
 export const getAllJobs = async (req: Request, res: Response) => {
@@ -105,26 +106,7 @@ export const getJobById = async (req: Request, res: Response) => {
       },
     });
 
-    console.log('response in post backend:', response.data);
     res.json(response.data);
-    // const companyRecord = await Company.findOne({
-    //   where: { slug: company },
-    //   include: [JobSource],
-    // });
-    // if (!companyRecord) {
-    //   return res.status(404).json({ error: 'Company not found' });
-    // }
-
-    // const job = await Job.findOne({
-    //   where: { companyId: companyRecord.id, jobId },
-    //   include: [Company, JobSource],
-    // });
-
-    // if (!job) {
-    //   return res.status(404).json({ error: 'Job not found' });
-    // }
-
-    // res.json(job);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch job' });
   }
@@ -186,28 +168,97 @@ export const getTodaysJobs = async (
   try {
     // get starting hours of today
     const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setHours(1, 0, 0, 0);
 
     // get the ending hours of the day
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999);
 
-    const jobs = await Job.findAll({
-      include: [Company, JobSource],
-      where: {
-        lastUpdatedAt: {
-          [Op.between]: [startOfDay, endOfDay],
-        },
+    const { search, location, companyId } = req.query;
+
+    const { page, pageSize, offset, limit } = getPaginationOptions(req);
+
+    const where: any = {
+      lastUpdatedAt: {
+        [Op.between]: [startOfDay, endOfDay],
       },
+    };
+    if (search) {
+      where[Op.or] = [
+        { title: { [Op.iLike]: `%${search}%` } },
+        { location: { [Op.iLike]: `%${search}%` } },
+      ];
+    }
+    if (location) {
+      where.location = { [Op.iLike]: `%${location}%` };
+    }
+
+    if (companyId) {
+      where.companyId = companyId;
+    }
+
+    const { count, rows: jobs } = await Job.findAndCountAll({
+      where,
+      include: [Company, JobSource],
+      limit,
+      offset,
     });
 
-    const data = {
-      count: jobs.length,
-      jobs,
-    };
+    const companies = jobs.reduce((acc: any, job: any) => {
+      if (!acc.some((company: any) => company.id === job.companyId)) {
+        acc.push({
+          id: job.companyId,
+          name: job.company?.name || '', // Assuming company name is present
+        });
+      }
+      return acc;
+    }, [] as { id: number; name: string }[]);
 
-    res.json(data);
+    const data = getPagingData(count, jobs, page, pageSize);
+    res.json({ ...data, companies });
   } catch (error) {
     next();
+  }
+};
+
+export const getDistinctCompanies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // get starting hours of today
+    const startOfDay = new Date();
+    startOfDay.setHours(1, 0, 0, 0);
+
+    // get the ending hours of the day
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const where: any = {
+      lastUpdatedAt: {
+        [Op.between]: [startOfDay, endOfDay],
+      },
+    };
+
+    const allJobs = await Job.findAll({
+      where,
+      include: [Company, JobSource],
+    });
+
+    // Get distinct companies from the jobs
+    const companies = allJobs.reduce((acc: any, job: any) => {
+      if (!acc.some((company: any) => company.id === job.companyId)) {
+        acc.push({
+          id: job.companyId,
+          name: job.company?.name || '', // Assuming company name is present
+        });
+      }
+      return acc;
+    }, [] as { id: number; name: string }[]);
+
+    res.json({ count: companies.length, companies });
+  } catch (error) {
+    next(error);
   }
 };

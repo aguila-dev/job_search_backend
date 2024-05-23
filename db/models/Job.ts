@@ -43,9 +43,6 @@ const Job = db.define(
     absoluteUrl: {
       type: DataTypes.STRING(500),
       allowNull: false,
-      validate: {
-        isUrl: true,
-      },
     },
     location: {
       type: DataTypes.TEXT,
@@ -72,8 +69,6 @@ const Job = db.define(
     },
   },
   {
-    // sequelize: db,
-    // modelName: 'Job',
     indexes: [
       {
         unique: true,
@@ -82,5 +77,13 @@ const Job = db.define(
     ],
   }
 );
+
+function isValidUrl(value: string) {
+  try {
+    new URL(value);
+  } catch (error) {
+    return false;
+  }
+}
 
 export default Job;

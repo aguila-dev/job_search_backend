@@ -26,9 +26,6 @@ const Company = db.define('company', {
     type: DataTypes.STRING,
     allowNull: true,
     defaultValue: path.join('/images', 'placeholder.png'),
-    // validate: {
-    //   isUrl: true,
-    // },
   },
   frontendUrl: {
     type: DataTypes.STRING,

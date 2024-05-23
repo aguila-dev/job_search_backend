@@ -32,6 +32,11 @@ const syncDatabase = async () => {
 
 const seedOrUpdateDatabase = async () => {
   try {
+    if (process.env.IGNORE_UPDATE_ON_RESTART === 'true') {
+      console.log('Skipping update due to server restart.');
+      return;
+    }
+
     if (process.env.SEED_DB === 'true') {
       console.log('Populating database...');
       await populateDatabase();
@@ -45,6 +50,10 @@ const seedOrUpdateDatabase = async () => {
   }
 };
 
+const resetIgnoreUpdateFlag = () => {
+  delete process.env.IGNORE_UPDATE_ON_RESTART;
+};
+
 const startServer = async () => {
   try {
     await syncDatabase();
@@ -53,6 +62,7 @@ const startServer = async () => {
     const server = app.listen(PORT, '0.0.0.0', async () => {
       console.log(`Server is running on http://localhost:${PORT}`);
       console.log(`Server running in ${process.env.NODE_ENV} mode`);
+      resetIgnoreUpdateFlag();
     });
 
     await seedOrUpdateDatabase();

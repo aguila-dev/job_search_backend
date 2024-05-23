@@ -15,18 +15,6 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
-// async function initializeLocations() {
-//   try {
-//     const locations = await fetchAllCompanyLocations();
-//     const filePath = path.join(__dirname, 'locations.json');
-//     fs.writeFileSync(filePath, JSON.stringify(locations, null, 2));
-//     console.log('Locations fetched and saved on server start.');
-//   } catch (error) {
-//     console.error('Failed to fetch and save locations on server start:', error);
-//   }
-// }
-
-// initializeLocations();
 console.log(`/${API.VERSION}/${API.ENDPOINT}`);
 app.use(`/${API.VERSION}/${API.ENDPOINT}`, apiRoutes);
 

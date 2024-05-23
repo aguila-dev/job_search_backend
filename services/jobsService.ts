@@ -120,12 +120,19 @@ async function fetchAndSaveWorkdayJobs({
         jobSourceId: jobSource.id,
         title: jobData.title,
         absoluteUrl: `${company.frontendUrl}${jobData.externalPath}`,
-        location: jobData.locationsText,
+        location: jobData.locationsText
+          ? jobData.locationsText
+          : jobData.bulletFields[0],
         jobId: jobId?.toString() || '',
         requisitionId: jobId?.toString() || '',
         metadata: {},
         lastUpdatedAt: jobData.postedOnDate,
       };
+
+      if (jobValues.absoluteUrl.length > 500) {
+        console.warn('Absolute URL too long:', jobData.absoluteUrl);
+        continue;
+      }
       await Job.upsert(jobValues, {
         conflictFields: ['jobId', 'jobSourceId'],
       });

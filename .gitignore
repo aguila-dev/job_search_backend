@@ -36,3 +36,5 @@ pgdata-prod
 
 # Ignore coverage files
 coverage
+
+commands.txt

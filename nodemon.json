@@ -2,6 +2,9 @@
     "ignore": ["locations.json"],
     "watch": ["*.ts", "*.json"],
     "ext": "ts, json",
-    "exec": "ts-node ./index.ts"
-  }
+    "exec": "ts-node ./index.ts",
+    "env": {
+        "IGNORE_UPDATE_ON_RESTART": "true"
+    }
+}
   

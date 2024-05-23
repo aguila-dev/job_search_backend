@@ -1,12 +1,10 @@
 import express, { Request, Response, NextFunction } from 'express';
 const router = express.Router();
-import workdayJobsRoute from './workdayJobsRoute';
 import jobsRoute from './jobsRoute';
 import applicationsRoute from './applicationsRoute';
 import adminRoutes from './adminRoutes';
 import companiesRoute from './companiesRoute';
 
-// router.use('/', workdayJobsRoute);
 router.use('/jobs', jobsRoute);
 router.use('/applications', applicationsRoute);
 router.use('/companies', companiesRoute);

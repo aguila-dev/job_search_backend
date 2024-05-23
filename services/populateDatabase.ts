@@ -58,12 +58,16 @@ export const updateDatabaseJobListings = async () => {
       const jobSource = await JobSource.findOne({
         where: { id: company.jobSourceId },
       });
-      if (jobSource.name === JobSourceEnum.GREENHOUSE) {
-        console.log('Updating Greenhouse jobs for:', company.name);
-        await fetchAndSaveGreenhouseJobs(company);
-      } else if (jobSource.name === JobSourceEnum.WORKDAY) {
-        console.log('Updating Workday jobs for:', company.name);
-        await fetchAndSaveWorkdayJobs(company);
+      try {
+        if (jobSource.name === JobSourceEnum.GREENHOUSE) {
+          console.log('Updating Greenhouse jobs for:', company.name);
+          await fetchAndSaveGreenhouseJobs(company);
+        } else if (jobSource.name === JobSourceEnum.WORKDAY) {
+          console.log('Updating Workday jobs for:', company.name);
+          await fetchAndSaveWorkdayJobs(company);
+        }
+      } catch (jobError) {
+        console.error(`Error updating jobs for ${company.name}:`, jobError);
       }
     }
     console.log('Database job listings updated.');

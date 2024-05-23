@@ -1,39 +1,15 @@
 const router = require('express').Router();
 import * as jobController from '../controllers/jobController';
-import { cacheMiddleware } from 'middleware/redisCacheMiddleware';
 
-router.get(
-  '/greenhouse',
-  //   cacheMiddleware('greenhouse-jobs'),
-  jobController.getGreenhouseJobs
-);
-router.get(
-  '/workday',
-  //   cacheMiddleware('workday-jobs'),
-  jobController.getWorkdayJobs
-);
+router.get('/greenhouse', jobController.getGreenhouseJobs);
+router.get('/workday', jobController.getWorkdayJobs);
 
-router.get(
-  '/',
-  // cacheMiddleware('jobs'),
-  jobController.getAllJobs
-);
-router.get(
-  '/company/:company',
-  //   cacheMiddleware('company-jobs'),
-  jobController.getJobsByCompany
-);
+router.get('/', jobController.getAllJobs);
+router.get('/company/:company', jobController.getJobsByCompany);
 
-router.get(
-  '/workday/individualJob',
-  //   cacheMiddleware('job'),
-  jobController.getJobById
-);
+router.get('/workday/individualJob', jobController.getJobById);
 
-router.get(
-  '/todays-jobs',
-  //   cacheMiddleware('todays-jobs'),
-  jobController.getTodaysJobs
-);
+router.get('/todays-jobs', jobController.getTodaysJobs);
+router.get('/todays-jobs/companies', jobController.getDistinctCompanies);
 
 export default router;
