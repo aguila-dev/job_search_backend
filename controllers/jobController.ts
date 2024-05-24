@@ -79,16 +79,8 @@ export const getJobsByCompany = async (req: Request, res: Response) => {
       offset,
     });
 
-    // get locations from the jobs to show in the filter
-    const locations = jobs.reduce((acc: any, job: any) => {
-      if (!acc.some((loc: any) => loc === job.location)) {
-        acc.push(job.location);
-      }
-      return acc;
-    }, [] as string[]);
-
     const data = getPagingData(count, jobs, page, pageSize);
-    res.json({ ...data, locations });
+    res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch jobs for the company' });
   }

@@ -23,6 +23,6 @@ export const getPagingData = (
   page: number,
   pageSize: number
 ) => {
-  // const totalPages = Math.ceil(count / pageSize);
-  return { count, page, jobs: rows };
+  const totalPages = Math.ceil(count / pageSize);
+  return { count, page, jobs: rows, totalPages };
 };
