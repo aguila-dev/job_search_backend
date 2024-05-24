@@ -12,6 +12,7 @@ import {
   processResponseDataAndIncludeLocations,
 } from './workdayService';
 import { extractJobId } from '@utils/extractJobId';
+import { WORKDAY_COUNTRY_ID } from '@utils/companyList';
 
 // GREENHOUSE CALL
 async function fetchAndSaveGreenhouseJobs({
@@ -57,6 +58,7 @@ async function fetchAndSaveGreenhouseJobs({
       dataCompliance: jobData.data_compliance,
       metadata: jobData.metadata,
       lastUpdatedAt: jobData.updated_at,
+      // isUnitedStates: true,
     };
     await Job.upsert(jobValues, {
       conflictFields: ['jobId', 'jobSourceId'],
@@ -115,11 +117,30 @@ async function fetchAndSaveWorkdayJobs({
 
     for (const jobData of jobs) {
       const jobId = extractJobId(jobData.externalPath, jobData.bulletFields);
+      const absoluteUrl = `${company.frontendUrl}${jobData.externalPath}`;
+      if (absoluteUrl.length > 500) {
+        console.warn('Absolute URL too long:', jobData.absoluteUrl);
+        continue;
+      }
+      // const jobPath = extractJobPath(absoluteUrl);
+      // const fullBackendUrl = `${company.apiEndpoint.replace(
+      //   '/jobs',
+      //   '/job'
+      // )}/${jobPath}`;
+      // Fetch additional job details from the backend
+      // const { data } = await axios.get(
+      //   'http://localhost:8000/v1/api/jobs/workday/individualJob',
+      //   { params: { fullBackendUrl } }
+      // );
+
+      // const isUnitedStates =
+      //   data.jobPostingInfo.country?.id === WORKDAY_COUNTRY_ID.US;
+
       const jobValues = {
         companyId: company.id,
         jobSourceId: jobSource.id,
         title: jobData.title,
-        absoluteUrl: `${company.frontendUrl}${jobData.externalPath}`,
+        absoluteUrl: absoluteUrl,
         location: jobData.locationsText
           ? jobData.locationsText
           : jobData.bulletFields[0],
@@ -127,12 +148,8 @@ async function fetchAndSaveWorkdayJobs({
         requisitionId: jobId?.toString() || '',
         metadata: {},
         lastUpdatedAt: jobData.postedOnDate,
+        // isUnitedStates,
       };
-
-      if (jobValues.absoluteUrl.length > 500) {
-        console.warn('Absolute URL too long:', jobData.absoluteUrl);
-        continue;
-      }
       await Job.upsert(jobValues, {
         conflictFields: ['jobId', 'jobSourceId'],
       });
@@ -145,6 +162,12 @@ async function fetchAndSaveWorkdayJobs({
 
     offset += limit;
   }
+}
+
+function extractJobPath(url: string): string {
+  const regex = /\/job\/(.*)/;
+  const match = url.match(regex);
+  return match ? match[1] : '';
 }
 
 export { fetchAndSaveGreenhouseJobs, fetchAndSaveWorkdayJobs };

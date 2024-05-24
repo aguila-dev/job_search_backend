@@ -6,8 +6,11 @@ import { Op } from 'sequelize';
  * FETCH ALL COMPANIES FROM THE COMPANY TABLE
  */
 export const getAllCompanies = async (req: Request, res: Response) => {
+  const { name } = req.query;
+  const where = name ? { name: { [Op.iLike]: `%${name}%` } } : {};
   try {
     const companies = await Company.findAll({
+      where,
       include: [JobSource],
       order: [['name', 'ASC']],
     });

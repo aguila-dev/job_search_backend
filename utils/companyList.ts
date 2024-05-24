@@ -1,5 +1,9 @@
 import { CompanyPaths } from '@interfaces/IUtilsCompanyList';
 
+export const WORKDAY_COUNTRY_ID = {
+  US: 'bc33aa3152ec42d4995f4791a106ed09',
+};
+
 const companyPaths: CompanyPaths = {
   caci: {
     basePath: 'caci/External/jobs',

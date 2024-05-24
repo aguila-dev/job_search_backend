@@ -3,9 +3,7 @@ import { Job, Company, JobSource } from '../db';
 import { JobSourceEnum } from '@interfaces/IModels';
 import { Op } from 'sequelize';
 import { getPaginationOptions, getPagingData } from '@utils/pagination';
-import { fetchWorkdayData } from '@services/workdayService';
 import axios from 'axios';
-import { start } from 'repl';
 
 // Get all jobs
 export const getAllJobs = async (req: Request, res: Response) => {
@@ -81,8 +79,16 @@ export const getJobsByCompany = async (req: Request, res: Response) => {
       offset,
     });
 
+    // get locations from the jobs to show in the filter
+    const locations = jobs.reduce((acc: any, job: any) => {
+      if (!acc.some((loc: any) => loc === job.location)) {
+        acc.push(job.location);
+      }
+      return acc;
+    }, [] as string[]);
+
     const data = getPagingData(count, jobs, page, pageSize);
-    res.json(data);
+    res.json({ ...data, locations });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch jobs for the company' });
   }
@@ -90,7 +96,6 @@ export const getJobsByCompany = async (req: Request, res: Response) => {
 
 export const getJobById = async (req: Request, res: Response) => {
   const { fullBackendUrl } = req.query;
-  console.log('fullBackendUrl:', fullBackendUrl);
 
   if (!fullBackendUrl || typeof fullBackendUrl !== 'string') {
     return res
@@ -204,18 +209,8 @@ export const getTodaysJobs = async (
       offset,
     });
 
-    const companies = jobs.reduce((acc: any, job: any) => {
-      if (!acc.some((company: any) => company.id === job.companyId)) {
-        acc.push({
-          id: job.companyId,
-          name: job.company?.name || '', // Assuming company name is present
-        });
-      }
-      return acc;
-    }, [] as { id: number; name: string }[]);
-
     const data = getPagingData(count, jobs, page, pageSize);
-    res.json({ ...data, companies });
+    res.json(data);
   } catch (error) {
     next();
   }
@@ -256,6 +251,10 @@ export const getDistinctCompanies = async (
       }
       return acc;
     }, [] as { id: number; name: string }[]);
+
+    companies.sort((compA: any, compB: any) =>
+      compA.name.localeCompare(compB.name)
+    );
 
     res.json({ count: companies.length, companies });
   } catch (error) {

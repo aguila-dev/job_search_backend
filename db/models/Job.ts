@@ -67,6 +67,10 @@ const Job = db.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    // isUnitedStates: {
+    //   type: DataTypes.BOOLEAN,
+    //   allowNull: true,
+    // },
   },
   {
     indexes: [

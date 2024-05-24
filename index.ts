@@ -32,7 +32,10 @@ const syncDatabase = async () => {
 
 const seedOrUpdateDatabase = async () => {
   try {
-    if (process.env.IGNORE_UPDATE_ON_RESTART === 'true') {
+    if (
+      process.env.IGNORE_UPDATE_ON_RESTART === 'true' &&
+      process.env.NODE_ENV === 'development'
+    ) {
       console.log('Skipping update due to server restart.');
       return;
     }
