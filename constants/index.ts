@@ -17,7 +17,8 @@ const SECURE = {
 
 const API = {
   VERSION: 'v1',
-  ENDPOINT: 'api',
+  API_ENDPOINT: 'api',
+  AUTH_ENDPOINT: 'auth',
 };
 
 export { CONFIG, SECURE, API };

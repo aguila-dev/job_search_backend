@@ -48,6 +48,10 @@ const User = db.define('user', {
     type: DataTypes.ENUM(...Object.values(UserRole)),
     defaultValue: UserRole.User,
   },
+  authenticated: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 /**

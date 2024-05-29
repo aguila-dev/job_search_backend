@@ -3,20 +3,43 @@ import { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import { API } from './constants';
 const app = express();
 
 import apiRoutes from './api';
+import authRoutes from './auth';
 import path from 'path';
 
-app.use(cors());
+const corsOptions = {
+  origin:
+    process.env.NODE_ENV === 'production'
+      ? 'https://www.jobsapp.com'
+      : 'http://localhost:5173',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'yourSecretKey',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true if using https
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    },
+  })
+);
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
-console.log(`/${API.VERSION}/${API.ENDPOINT}`);
-app.use(`/${API.VERSION}/${API.ENDPOINT}`, apiRoutes);
+app.use(`/${API.VERSION}/${API.API_ENDPOINT}`, apiRoutes);
+app.use(`/${API.VERSION}/${API.AUTH_ENDPOINT}`, authRoutes);
 
 app.use('/', (req: Request, res: Response) => {
   res.status(401).json({
@@ -26,38 +49,6 @@ app.use('/', (req: Request, res: Response) => {
     version: '1.0.0',
   });
 });
-
-// app.get('/v1/api/locations', (req, res) => {
-//   const filePath = path.join(__dirname, 'locations.json');
-//   fs.readFile(filePath, 'utf8', (err, data) => {
-//     if (err) {
-//       console.error('Error reading locations file:', err);
-//       res.status(500).send('Error reading locations data');
-//       return;
-//     }
-//     res.json(JSON.parse(data));
-//   });
-// });
-
-// app.get('/v1/api/locations/:company', async (req, res) => {
-//   // get the company name from the request and compare to the locations.json file
-//   const { company } = req.params;
-//   const filePath = path.join(__dirname, 'locations.json');
-//   fs.readFile(filePath, 'utf8', (err, data) => {
-//     if (err) {
-//       console.error('Error reading locations file:', err);
-//       res.status(500).send('Error reading locations data');
-//       return;
-//     }
-//     const locations = JSON.parse(data);
-//     const companyLocations = locations[company];
-//     if (!companyLocations) {
-//       res.status(404).json({ error: 'Company not found' });
-//       return;
-//     }
-//     res.json(companyLocations);
-//   });
-// });
 
 /* Error handling */
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

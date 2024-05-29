@@ -16,7 +16,8 @@
     "strict": true /* Enable all strict type-checking options. */,
     "typeRoots": [
       "./node_modules/@types",
-      "./interface"
+      "./interface",
+      "./types"
     ] /* List of folders to include type definitions from. */,
     /* Completeness */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
@@ -24,9 +25,10 @@
     "paths": {
       "@utils/*": ["utils/*.ts"],
       "@interfaces/*": ["interface/*.ts"],
-      "@services/*": ["services/*.ts"]
+      "@services/*": ["services/*.ts"],
+      "@types/*": ["types/*.ts"]
     } /* Specify path mapping to be computed relative to baseUrl option. */
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules"]
 }
