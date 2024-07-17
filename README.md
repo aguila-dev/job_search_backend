@@ -67,7 +67,7 @@ This is the backend application for job-board application viewer and tracker. A 
 
 #### TODO
 
-this is still a work in progess with lots to do including but not limited to:
+this is still a work in progess with lots to do including but not limited to...:
 
 - [ ] connect "applied" to add that job to applied jobs tab
 - [ ] a way to move "applied" to "no longer considering
