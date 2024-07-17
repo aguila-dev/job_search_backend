@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '8000:8000'
+      - "8000:8000"
     container_name: jobs-backend
     volumes:
       - .:/app
@@ -19,11 +19,11 @@ services:
     image: postgres:13
     container_name: jobs-database-test
     environment:
-      POSTGRES_USER: aguilana
+      POSTGRES_USER: ${LOCAL_PG_DB_USER}
       POSTGRES_PASSWORD: ${LOCAL_PG_DB_PASSWORD}
       POSTGRES_DB: ${LOCAL_PG_DB_NAME_TEST}
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 

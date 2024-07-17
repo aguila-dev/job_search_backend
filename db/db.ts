@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize');
-require('dotenv').config();
-import { CONFIG } from '../constants';
+const Sequelize = require("sequelize");
+require("dotenv").config();
+import { CONFIG } from "../constants";
 const {
   isDevelopment,
   isTest,
@@ -9,6 +9,19 @@ const {
   localDatabaseUrl,
   localDatabaseNameTest,
 } = CONFIG;
+
+console.log({
+  isDevelopment,
+  isTest,
+  isLogging,
+  localDatabaseName,
+  localDatabaseUrl,
+  localDatabaseNameTest,
+  dropDb: process.env.DROP_DB,
+  alterDb: process.env.ALTER_DB,
+  seedDb: process.env.SEED_DB,
+  ignoreUpdateOnRestart: process.env.IGNORE_UPDATE_ON_RESTART,
+});
 
 interface DBConfig {
   logging?: boolean;
@@ -52,8 +65,8 @@ if (isDevelopment && isTest) {
   throw new Error(
     `PROD_DATABASE_URL environment variable is not set. ${
       isDevelopment
-        ? 'Please set it in your .env file. You are in development mode'
-        : ''
+        ? "Please set it in your .env file. You are in development mode"
+        : ""
     }`
   );
 }

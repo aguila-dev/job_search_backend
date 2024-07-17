@@ -1,10 +1,11 @@
 {
   "name": "jobs-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend for jobs app",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
+    "dev": "IGNORE_UPDATE_ON_RESTART=true nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
+    "dev:seed": "DROP_DB=true SEED_DB=true NODE_ENV=development IGNORE_UPDATE_ON_RESTART=false nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
     "test": "jest --verbose --coverage "
   },
   "keywords": [],
