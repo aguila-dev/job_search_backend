@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "IGNORE_UPDATE_ON_RESTART=true nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
     "dev:seed": "DROP_DB=true SEED_DB=true NODE_ENV=development IGNORE_UPDATE_ON_RESTART=false nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
-    "test": "jest"
+    "test": "jest",
+    "update-db": "ts-node -r tsconfig-paths/register script/update-db.ts"
   },
   "keywords": [],
   "author": "",

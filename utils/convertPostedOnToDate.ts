@@ -23,12 +23,12 @@ export const dynamicDaysAgo = (days: number) => {
 export const convertPostedOnToDate = (postedOn: string) => {
   postedOn = postedOn?.toLowerCase();
   let postedOnDate = new Date();
-  if (postedOn.includes('today')) {
+  if (postedOn.includes("today")) {
     postedOnDate = setTimeForDate(new Date(), 6, 30);
-  } else if (postedOn.includes('yesterday')) {
+  } else if (postedOn.includes("yesterday")) {
     postedOnDate = yesterdayDate();
-  } else if (postedOn.includes('days ago')) {
-    const daysAgo = parseInt(postedOn.split(' ')[1]);
+  } else if (postedOn.includes("days ago")) {
+    const daysAgo = parseInt(postedOn.split(" ")[1]);
     postedOnDate = dynamicDaysAgo(daysAgo);
   } else {
     postedOnDate = new Date(postedOn);
@@ -37,7 +37,11 @@ export const convertPostedOnToDate = (postedOn: string) => {
   return postedOnDate.toISOString();
 };
 
-const today = convertPostedOnToDate('Posted Today');
-const yesterday = convertPostedOnToDate('Posted Yesterday');
-console.log('today>>', new Date(today).toDateString());
-console.log('yesterday>>', new Date(yesterday).toDateString());
+export const covertDateToMmDdYyyy = (date: Date) => {
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+};
+
+const today = convertPostedOnToDate("Posted Today");
+const yesterday = convertPostedOnToDate("Posted Yesterday");
+console.log("today>>", new Date(today).toDateString());
+console.log("yesterday>>", new Date(yesterday).toDateString());
