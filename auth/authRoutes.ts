@@ -5,7 +5,7 @@ import * as authController from "../controllers/authController";
 router.post("/signup", authController.register);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
-router.post("/refresh-token", authController.refreshToken);
+router.get("/refresh-token", authController.refreshToken);
 router.get("/verify-email/:token", authController.verifyEmail);
 router.get("/me", authenticate, authController.me);
 

@@ -1,11 +1,10 @@
 const { DataTypes } = require("sequelize");
-import { SECURE } from "../../constants";
+import { UserRole } from "@interfaces/IModels";
 import CustomError from "@utils/customError";
-import db from "../db";
-import bcrypt from "bcrypt";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { UserRole } from "@interfaces/IModels";
+import { SECURE } from "../../constants";
+import db from "../db";
 
 const User = db.define("user", {
   id: {
@@ -76,7 +75,7 @@ User.prototype.generateTokens = function (): {
     },
     process.env.JWT_SECRET as string,
     {
-      expiresIn: "10m",
+      expiresIn: "15m", // 15 minutes
     }
   );
 
@@ -86,7 +85,7 @@ User.prototype.generateTokens = function (): {
     },
     process.env.JWT_REFRESH_SECRET as string,
     {
-      expiresIn: "7d",
+      expiresIn: 7 * 24 * 60 * 60 * 1000, // "7d"
     }
   );
 

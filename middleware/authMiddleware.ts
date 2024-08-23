@@ -11,32 +11,27 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("authenticating middleware start");
   const authReq = req as ReqWithUser;
 
   // Get the token from the Authorization header
-  const authHeader = req.headers.authorization ?? req.cookies._jaAT;
-  console.log("authHeader from authorization or cookies", {
-    headerAuth: req.headers.authorization,
-    cookieAccessToken: req.cookies._jaAT,
-  });
-  console.log("authHeader", authHeader);
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (!authHeader) {
+  if (!token || !authHeader) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
     const decoded = jwt.verify(
-      authHeader,
+      token,
       process.env.JWT_SECRET as string
     ) as JwtPayload;
 
     authReq.user = decoded; // Attach the decoded user information to the request
-    authReq.token = authHeader; // Attach the token to the request
+    authReq.token = token; // Attach the token to the request
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized", tokenValid: false });
   }
 };

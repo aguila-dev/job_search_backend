@@ -1,14 +1,15 @@
-import express, { Request, Response, NextFunction } from "express";
-const router = express.Router();
-import jobsRoute from "./jobsRoute";
-import applicationsRoute from "./applicationsRoute";
-import adminRoutes from "./adminRoutes";
-import companiesRoute from "./companiesRoute";
+import { authenticate } from "@/middleware/authMiddleware";
+import express, { NextFunction, Request, Response } from "express";
 import { publicKey } from "script/genKey";
+import adminRoutes from "./adminRoutes";
+import applicationsRoute from "./applicationsRoute";
+import companiesRoute from "./companiesRoute";
+import jobsRoute from "./jobsRoute";
+const router = express.Router();
 
-router.use("/jobs", jobsRoute);
-router.use("/applications", applicationsRoute);
-router.use("/companies", companiesRoute);
+router.use("/jobs", authenticate, jobsRoute);
+router.use("/applications", authenticate, applicationsRoute);
+router.use("/companies", authenticate, companiesRoute);
 router.use("/public-key", (req: Request, res: Response) => {
   res.send(publicKey);
 });

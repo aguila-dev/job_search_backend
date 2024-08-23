@@ -1,0 +1,6 @@
+POST http://localhost:8000/v1/auth/login
+Content-Type: application/json
+
+{
+    "encryptedData": "uaGTa2d88M73j2iADw3xDSUoas8sVUSyazGutP9YIzP4D3CfSeM8/I52v+T2PtI3UconVZHssX8jW4lS/+UAqVSqbHcBV+rg4z/oKEnBKK5YJvYjgiYNEKeBdDjTzy2Gv9fijrq1tfNskfJS/P5c6kBraxhKwun7IHfmQi1fnKBz3o3jEpngkyxnN968Vf0xG0b/WUmcG56b/JTPG4G4I8q9ci9k61Fdf16tlTDscr9XISKH70ns2OkM2El4Hq1/ESEgbuWXrBEc+/dmE1IN/O7Hg70yxK3HKXHVQIYpvRBD6/sRIO8FXOTM5GxuNkA8PoeOR7/FFdvdHfVhxM7mjg=="
+}

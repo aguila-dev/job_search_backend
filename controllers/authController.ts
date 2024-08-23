@@ -7,8 +7,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { ReqWithUser } from "middleware/types";
 import { privateKey } from "script/genKey";
 
-const { accessTokenKey, refreshTokenKey } = AUTH_COOKIES;
-
 interface TokenPayload extends JwtPayload {
   id: number;
 }
@@ -20,9 +18,31 @@ export const login = async (
 ) => {
   const { encryptedData } = req.body;
 
-  const decryptedData = decryptDataWithPrivateKey(encryptedData, privateKey);
+  let email, password;
 
-  const { email, password } = JSON.parse(decryptedData);
+  if (process.env.ENCRYPTION_ENABLED === "true") {
+    if (!encryptedData) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    let decryptedData;
+    try {
+      decryptedData = decryptDataWithPrivateKey(encryptedData, privateKey);
+    } catch {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+    try {
+      ({ email, password } = JSON.parse(decryptedData));
+    } catch {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+  } else {
+    // If encryption is not enabled, use the plain email and password
+    ({ email, password } = req.body);
+    if (!email || !password) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+  }
 
   try {
     const { accessToken, refreshToken } = await User.authenticate(
@@ -34,20 +54,13 @@ export const login = async (
       throw new Error("Invalid login credentials");
     }
 
-    res.cookie(accessTokenKey, accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure flag for production only
-      maxAge: 1 * 5 * 60 * 1000, // 5 minutes
-    });
-
-    res.cookie(refreshTokenKey, refreshToken, {
+    res.cookie(AUTH_COOKIES.refreshTokenKey, refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Secure flag for production only
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-    // setAuthCookies(res, accessToken, refreshToken);
 
-    res.status(200).json({ accessToken });
+    return res.status(200).json({ accessToken });
   } catch (error) {
     next(error);
   }
@@ -74,18 +87,11 @@ export const register = async (
     console.log("need to send verification email here");
     const { accessToken, refreshToken } = user.generateTokens();
 
-    res.cookie(accessTokenKey, accessToken, {
+    res.cookie(AUTH_COOKIES.refreshTokenKey, refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure flag for production only
-      maxAge: 1 * 5 * 60 * 1000, // 5 minutes
-    });
-
-    res.cookie(refreshTokenKey, refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure flag for production only
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-    // setAuthCookies(res, accessToken, refreshToken);
 
     res.status(201).json({
       accessToken,
@@ -130,10 +136,12 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = authReq.token;
 
     if (!user || !accessToken) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res
+        .status(401)
+        .json({ message: "Unauthorized", tokenValid: false });
     }
 
-    res.status(200).json({ tokenValid: true, accessToken: accessToken });
+    res.status(200).json({ tokenValid: true, accessToken });
   } catch (error) {
     next(error);
   }
@@ -143,21 +151,26 @@ export const refreshToken = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+) => {
   try {
-    const refreshToken = req.cookies._jaRT;
-    if (!refreshToken) {
-      res.status(401).json({ message: "Unauthorized" });
+    const oldRefreshToken = req.cookies._jaRT;
+    console.log("oldRefreshToken", oldRefreshToken);
+    if (!oldRefreshToken) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     const decoded = jwt.verify(
-      refreshToken,
+      oldRefreshToken,
       process.env.JWT_REFRESH_SECRET as string
     ) as JwtPayload;
 
+    if (!decoded) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const user = await User.findByPk(decoded.id);
     if (!user) {
-      res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
     const { accessToken } = user.generateTokens();
@@ -168,9 +181,9 @@ export const refreshToken = async (
       maxAge: 5 * 60 * 1000, // 5 minutes
     });
 
-    res.status(200).json({ accessToken });
+    return res.status(200).json({ accessToken });
   } catch (error) {
-    res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };
 
@@ -180,14 +193,7 @@ export const logout = async (
   next: NextFunction
 ) => {
   try {
-    res.clearCookie(AUTH_COOKIES.accessTokenKey, {
-      httpOnly: true,
-      secure: true,
-    });
-    res.clearCookie(AUTH_COOKIES.refreshTokenKey, {
-      httpOnly: true,
-      secure: true,
-    });
+    res.clearCookie(AUTH_COOKIES.refreshTokenKey);
     return res.status(200).send("Logout successful");
   } catch (error) {
     next(error);
