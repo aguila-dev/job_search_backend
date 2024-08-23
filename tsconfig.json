@@ -22,7 +22,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "baseUrl": "./" /* Base directory to resolve non-absolute module names. */,
     "paths": {
-      // "@/*": ["/"],
+      "@/*": ["./*"],
       "@utils/*": ["utils/*.ts"],
       "@interfaces/*": ["interface/*.ts"],
       "@services/*": ["services/*.ts"],

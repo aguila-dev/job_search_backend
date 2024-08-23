@@ -2,14 +2,22 @@ import dotenv from "dotenv";
 import path from "path";
 
 // Determine the environment file name based on NODE_ENV or default to '.env.local'
-const envFile =
-  process.env.NODE_ENV === "development"
-    ? `.env.local`
-    : process.env.NODE_ENV === "staging"
-    ? `.env.staging`
-    : process.env.NODE_ENV === "production"
-    ? `.env.production`
-    : `.env.local`;
+let envFile: string;
+
+switch (process.env.NODE_ENV) {
+  case "development":
+    envFile = ".env.local";
+    break;
+  case "staging":
+    envFile = ".env.staging";
+    break;
+  case "production":
+    envFile = ".env.production";
+    break;
+  default:
+    envFile = ".env.local";
+    break;
+}
 
 // Construct the path to the environment file
 const envPath = path.resolve(process.cwd(), envFile);
@@ -33,10 +41,15 @@ const SECURE = {
   SALT: 5,
 };
 
+const AUTH_COOKIES = {
+  accessTokenKey: "_jaAT",
+  refreshTokenKey: "_jaRT",
+};
+
 const API = {
   VERSION: "v1",
   API_ENDPOINT: "api",
   AUTH_ENDPOINT: "auth",
 };
 
-export { CONFIG, SECURE, API };
+export { API, AUTH_COOKIES, CONFIG, SECURE };

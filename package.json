@@ -7,10 +7,14 @@
     "dev": "IGNORE_UPDATE_ON_RESTART=true nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
     "dev:seed": "DROP_DB=true SEED_DB=true NODE_ENV=development IGNORE_UPDATE_ON_RESTART=false nodemon --ignore 'locations.json' --exec ts-node -r tsconfig-paths/register index.ts",
     "test": "jest",
-    "update-db": "ts-node -r tsconfig-paths/register script/update-db.ts"
+    "update-db": "ts-node -r tsconfig-paths/register script/update-db.ts",
+    "gen-key": "ts-node -r tsconfig-paths/register script/genKey.ts",
+    "delete-users": "ts-node -r tsconfig-paths/register script/sql/deleteUsers.ts",
+    "seed-users": "ts-node script/sql/seedUsers.ts",
+    "reseedUsers": "ts-node -r tsconfig-paths/register script/sql/deleteAndReseed.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "aguilana",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.8",
