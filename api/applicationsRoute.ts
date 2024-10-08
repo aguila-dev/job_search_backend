@@ -1,12 +1,14 @@
-const router = require('express').Router();
-import * as applicationController from '../controllers/jobApplicationContoller';
+const router = require("express").Router();
+import * as applicationController from "../controllers/jobApplicationContoller";
 
-router.get('/', applicationController.getActiveJobApplications);
-router.post('/active', applicationController.createJobApplication);
+// v1/api/applications
+
+router.get("/", applicationController.getActiveJobApplications);
+router.post("/active", applicationController.createJobApplication);
 router.get(
-  '/not-active',
+  "/not-active",
   applicationController.getNoLongerConsideringApplications
 );
-router.put('/:id', applicationController.updateJobApplication);
+router.put("/:id", applicationController.updateJobApplication);
 
 export default router;

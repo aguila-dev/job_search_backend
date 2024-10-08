@@ -193,7 +193,7 @@ export const companyConfig: CompanyConfigurations = {
     doordash: {
       title: "DoorDash",
       name: "doordash",
-      backendApi: `${LINK}/doordash/jobs`,
+      backendApi: `${LINK}/doordashusa/jobs`,
       active: true,
     },
     gusto: {

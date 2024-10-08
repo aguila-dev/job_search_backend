@@ -7,6 +7,7 @@ import companiesRoute from "./companiesRoute";
 import jobsRoute from "./jobsRoute";
 const router = express.Router();
 
+// v1/api
 router.use("/jobs", authenticate, jobsRoute);
 router.use("/applications", authenticate, applicationsRoute);
 router.use("/companies", authenticate, companiesRoute);

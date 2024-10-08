@@ -29,6 +29,12 @@
       "@types/*": ["types/*.ts"]
     } /* Specify path mapping to be computed relative to baseUrl option. */
   },
-  "include": ["./**/*.ts", "types/**/*.d.ts", ".env.ts"],
+  "include": [
+    "./**/*.ts",
+    "types/**/*.d.ts",
+    ".env.ts",
+    "environment.d.ts",
+    "types/**/*"
+  ],
   "exclude": ["node_modules", "dist"]
 }
