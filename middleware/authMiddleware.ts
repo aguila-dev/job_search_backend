@@ -29,7 +29,6 @@ export const authenticate = async (
 
     authReq.user = decoded; // Attach the decoded user information to the request
     authReq.token = token; // Attach the token to the request
-
     next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized", tokenValid: false });

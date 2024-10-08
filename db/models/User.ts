@@ -1,12 +1,12 @@
-const { DataTypes } = require("sequelize");
-import { UserRole } from "@interfaces/IModels";
-import CustomError from "@utils/customError";
-import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { SECURE } from "../../constants";
-import db from "../db";
+const { DataTypes } = require('sequelize');
+import { UserRole } from '@interfaces/IModels';
+import CustomError from '@utils/customError';
+import bcryptjs from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { SECURE } from '../../constants';
+import db from '../db';
 
-const User = db.define("user", {
+const User = db.define('user', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -35,14 +35,6 @@ const User = db.define("user", {
       notEmpty: true,
     },
   },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-      len: [8, 50],
-    },
-  },
   role: {
     type: DataTypes.ENUM(...Object.values(UserRole)),
     defaultValue: UserRole.User,
@@ -50,6 +42,11 @@ const User = db.define("user", {
   authenticated: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  auth0ProviderId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
   },
 });
 
@@ -75,7 +72,7 @@ User.prototype.generateTokens = function (): {
     },
     process.env.JWT_SECRET as string,
     {
-      expiresIn: "15m", // 15 minutes
+      expiresIn: '15m', // 15 minutes
     }
   );
 
@@ -105,7 +102,7 @@ User.authenticate = async function (
 }> {
   const user = await User.findOne({ where: { email } });
   if (!user || !(await user.comparePassword(password))) {
-    throw new CustomError("Invalid login credentials", 401);
+    throw new CustomError('Invalid login credentials', 401);
   }
   return user.generateTokens();
 };
@@ -118,11 +115,11 @@ User.findByToken = async function (token: string): Promise<any> {
     )) as { id: number };
     const user = await User.findByPk(id);
     if (!user) {
-      throw new CustomError("No user found", 404);
+      throw new CustomError('No user found', 404);
     }
     return user;
   } catch (error) {
-    throw new CustomError("Invalid token", 401);
+    throw new CustomError('Invalid token', 401);
   }
 };
 
@@ -131,7 +128,7 @@ User.findByToken = async function (token: string): Promise<any> {
  */
 
 const hashPwd = async (user: any) => {
-  if (user.changed("password")) {
+  if (user.changed('password')) {
     user.password = await bcryptjs.hash(user.password, SECURE.SALT);
   }
 };
