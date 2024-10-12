@@ -36,7 +36,6 @@
     "redis": "^4.6.14",
     "sequelize": "^6.37.3",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
@@ -55,6 +54,7 @@
     "prettier": "^3.3.3",
     "sequelize-cli": "^6.6.2",
     "ts-jest": "^29.2.2",
+    "tsconfig-paths": "^4.2.0",
     "tsconfig-paths-jest": "^0.0.1"
   }
 }
