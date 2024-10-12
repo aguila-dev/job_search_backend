@@ -6,7 +6,7 @@ import {
 // import redisClient from './redisClient';
 import { JobSourceEnum } from '@interfaces/IModels';
 import { buildApiUrl } from '@utils/apiUtils';
-import { testUsers } from 'data/testUsers';
+// import { testUsers } from 'data/testUsers';
 import { Company, JobSource, User } from 'db';
 
 export const seedTestUsers = async () => {
@@ -14,7 +14,7 @@ export const seedTestUsers = async () => {
     const users = await User.findAll();
     if (users.length === 0) {
       console.log('Seeding test users...');
-      await User.bulkCreate(testUsers);
+      // await User.bulkCreate(testUsers);
       console.log('Test users seeded.');
     } else {
       console.log('Test users already seeded.');
