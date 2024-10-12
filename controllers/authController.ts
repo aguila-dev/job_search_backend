@@ -219,23 +219,40 @@ export const loginAuth0User = async (req: Request, res: Response) => {
 
 export const signupAuth0User = async (req: Request, res: Response) => {
   try {
-    const { email, name } = req.body;
-    const auth0UserId = req.auth?.payload.sub;
-    const userPayload = req.auth?.payload;
-    console.log(
-      'req.body!!! ** MADE TO THE SIGNUP USER CONTROLLER *** \n',
-      req.body,
-      auth0UserId,
-      userPayload
-    );
-    const user = await User.create({ email, name, auth0UserId });
-    console.log('user created:', {
-      email: user.email,
-      name: user.name,
-      auth0UserId: user.auth0UserId,
+    const { email, firstName, lastName } = req.body;
+    const auth0ProviderId = req.auth?.payload.sub;
+    console.log('EMAIL:', email);
+    console.log('FIRSTNAME:', firstName);
+    console.log('LASTNAME:', lastName);
+    console.log('AUTH0USERID:', auth0ProviderId);
+
+    if (!email || !firstName || !lastName || !auth0ProviderId) {
+      return res.status(400).json({ message: 'Invalid request' });
+    }
+
+    const user = await User.create({
+      email,
+      firstName,
+      lastName,
+      auth0ProviderId,
     });
+    console.log('user created:', user);
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ message: 'Error creating user', error });
+  }
+};
+
+export const checkUser = async (req: Request, res: Response) => {
+  const { email } = req.query;
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error checking user', error });
   }
 };

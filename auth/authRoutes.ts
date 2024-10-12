@@ -1,12 +1,21 @@
 const router = require('express').Router();
+import checkJwt from '@/middleware/checkJwt';
 import { authenticate } from 'middleware/authMiddleware';
 import * as authController from '../controllers/authController';
 
-router.post('/signup', authController.register);
-router.post('/login', authController.login);
-router.post('/logout', authController.logout);
-router.post('/login-auth0', authController.loginAuth0User);
-router.post('/signup-auth0', authController.signupAuth0User);
+////////////////////////////
+//// * Current routes * ////
+////////////////////////////
+router.post('/login', checkJwt, authController.loginAuth0User);
+router.post('/signup', checkJwt, authController.signupAuth0User);
+router.get('/checkUser', checkJwt, authController.checkUser);
+
+///////////////////////////
+//// Deprecated routes ////
+///////////////////////////
+router.post('/signup-2', authController.register);
+router.post('/login-2', authController.login);
+router.post('/logout-2', authController.logout);
 router.get('/refresh-token', authController.refreshToken);
 router.get('/verify-email/:token', authController.verifyEmail);
 router.get('/me', authenticate, authController.me);
