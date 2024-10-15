@@ -16,4 +16,6 @@ enum ApplicationStatus {
   WITHDRAWN = 'withdrawn',
 }
 
-export { UserRole, JobSourceEnum, ApplicationStatus };
+export interface WorkdayJob {}
+
+export { ApplicationStatus, JobSourceEnum, UserRole };

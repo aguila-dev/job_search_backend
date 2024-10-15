@@ -248,7 +248,7 @@ export const checkUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (user) {
-      res.json(user);
+      res.sendStatus(200);
     } else {
       res.status(404).json({ message: 'User not found' });
     }

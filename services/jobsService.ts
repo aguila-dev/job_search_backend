@@ -72,11 +72,17 @@ async function fetchAndSaveGreenhouseJobs({
     }
 
     for (const jobData of jobs) {
+      let absoluteUrl = jobData.absolute_url;
+
+      // Sanitize the URL if the company name is "airbnb"
+      if (slug.toLowerCase() === 'airbnb') {
+        absoluteUrl = absoluteUrl.split('?')[0];
+      }
       const jobValues = {
         companyId: company.id,
         jobSourceId: jobSource.id,
         title: jobData.title,
-        absoluteUrl: jobData.absolute_url,
+        absoluteUrl: absoluteUrl,
         location: jobData?.location.name,
         jobId: jobData.id.toString(),
         requisitionId: jobData?.id.toString(),

@@ -51,8 +51,8 @@ const companyPaths: CompanyPaths = {
   },
   capitalone: {
     basePath: 'capitalone/Capital_One/jobs',
-    wdNum: 'wd1',
-    frontendUrl: 'https://capitalone.wd1.myworkdayjobs.com/Capital_One/',
+    wdNum: 'wd12',
+    frontendUrl: 'https://capitalone.wd12.myworkdayjobs.com/Capital_One/',
   },
 };
 
