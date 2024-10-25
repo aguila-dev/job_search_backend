@@ -6,7 +6,7 @@
 2. install dependencies
 
 ```zsh
-        npm i
+    npm i
 ```
 
 3. use correct node version
