@@ -122,7 +122,7 @@ async function fetchAndSaveWorkdayJobs({
 }: any) {
   const backendUrl = apiEndpoint;
   if (!backendUrl) {
-    throw new Error(`No apiEndpoint found for Greenhouse company: ${name}`);
+    throw new Error(`No apiEndpoint found for Workday company: ${name}`);
   }
 
   let offset = 0;
@@ -169,19 +169,6 @@ async function fetchAndSaveWorkdayJobs({
         console.warn('Absolute URL too long:', jobData.absoluteUrl);
         continue;
       }
-      // const jobPath = extractJobPath(absoluteUrl);
-      // const fullBackendUrl = `${company.apiEndpoint.replace(
-      //   '/jobs',
-      //   '/job'
-      // )}/${jobPath}`;
-      // Fetch additional job details from the backend
-      // const { data } = await axios.get(
-      //   'http://localhost:8000/v1/api/jobs/workday/individualJob',
-      //   { params: { fullBackendUrl } }
-      // );
-
-      // const isUnitedStates =
-      //   data.jobPostingInfo.country?.id === WORKDAY_COUNTRY_ID.US;
 
       const jobValues = {
         companyId: company.id,
