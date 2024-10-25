@@ -18,7 +18,4 @@ const checkJwt = auth({
   tokenSigningAlg: 'HS256',
 });
 
-// (checkJwt as RequestHandler).unless = unless;
-console.log('checkJwt here!!! ******\n:', checkJwt);
-
 export default checkJwt as RequestHandler;
